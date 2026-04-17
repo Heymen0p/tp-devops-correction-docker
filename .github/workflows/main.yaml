@@ -23,6 +23,10 @@ jobs:
      #finally build your app with the latest command
       - name: Build and test with Maven
         run: mvn clean verify --file simple-api/
+      
+      - name: SonarCloud
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=heymen0p -Dsonar.organization=Heymen0p -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
+
 
 
 # define job to build and publish docker image
@@ -88,6 +92,3 @@ jobs:
           context: ./http-server
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
-
-      - name: SonarCloud
-        run: mvn -B verify sonar:sonar -Dsonar.projectKey=heymen0p -Dsonar.organization=Heymen0p -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
