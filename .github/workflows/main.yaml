@@ -62,7 +62,7 @@ jobs:
       - name: Build image and push httpd
         uses: docker/build-push-action@v6
         with:
-          context: ./httpd
+          context: ./http-server
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
       - name: Login to DockerHub
@@ -88,3 +88,6 @@ jobs:
           context: ./httpd
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: SonarCloud
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=heymen0p -Dsonar.organization=Heymen0p -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
