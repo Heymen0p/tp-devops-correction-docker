@@ -1,0 +1,16 @@
+---
+# Deploy frontend container
+- name: Run frontend
+  command: >
+    docker run -d
+    --name frontend
+    --network my-network
+    {{ dockerhub_username }}/tp-devops-frontend:latest
+  register: frontend_result
+  failed_when: false
+  changed_when: frontend_result.rc == 0
+
+- name: Ensure frontend is running
+  shell: docker inspect -f '{% raw %}{{.State.Running}}{% endraw %}' frontend
+  register: frontend_check
+  failed_when: frontend_check.stdout != "true"
