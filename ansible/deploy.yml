@@ -2,11 +2,13 @@
 - hosts: all
   gather_facts: true
   become: true
+  vars_files:
+    - vars/vault.yml
 
   roles:
     - docker
     - network
     - database
     - api
-    - frontend
     - proxy
+    # - frontend  # Uncomment after building and pushing frontend image

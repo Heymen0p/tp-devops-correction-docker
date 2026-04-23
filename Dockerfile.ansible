@@ -1,0 +1,24 @@
+FROM ansible/ansible:latest
+
+# Install additional dependencies
+RUN apt-get update && apt-get install -y \
+    openssh-client \
+    git \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Docker SDK for Python
+RUN pip3 install docker
+
+# Create working directory
+WORKDIR /ansible
+
+# Copy Ansible configuration
+COPY ansible/ /ansible/
+
+# Set up SSH key
+RUN mkdir -p ~/.ssh && \
+    chmod 700 ~/.ssh
+
+# Default command
+CMD ["ansible-playbook", "-i", "inventories/setup.yml", "deploy.yml"]
