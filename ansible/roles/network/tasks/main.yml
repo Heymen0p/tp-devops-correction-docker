@@ -1,0 +1,12 @@
+---
+# Create Docker network for application
+- name: Create Docker network
+  command: docker network create my-network
+  register: network_result
+  failed_when: false
+  changed_when: network_result.rc == 0
+
+- name: Ensure network exists
+  command: docker network inspect my-network
+  register: network_check
+  failed_when: network_check.rc != 0

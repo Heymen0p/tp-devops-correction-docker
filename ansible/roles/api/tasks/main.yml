@@ -1,0 +1,18 @@
+---
+# Deploy Spring Boot API container
+- name: Run Spring Boot API
+  command: >
+    docker run -d
+    --name simple-api
+    -e DATABASE_HOST=database
+    -e DATABASE_PASSWORD=pwd
+    --network my-network
+    {{ dockerhub_username }}/tp-devops-simple-api:latest
+  register: api_result
+  failed_when: false
+  changed_when: api_result.rc == 0
+
+- name: Ensure API is running
+  shell: docker inspect -f '{% raw %}{{.State.Running}}{% endraw %}' simple-api
+  register: api_check
+  failed_when: api_check.stdout != "true"

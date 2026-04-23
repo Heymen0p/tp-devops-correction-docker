@@ -1,0 +1,20 @@
+---
+# Deploy PostgreSQL database container
+- name: Run PostgreSQL database
+  command: >
+    docker run -d
+    --name database
+    -e POSTGRES_PASSWORD=pwd
+    -e POSTGRES_DB=db
+    -e POSTGRES_USER=usr
+    -v db-volume:/var/lib/postgresql/data
+    --network my-network
+    {{ dockerhub_username }}/tp-devops-database:latest
+  register: db_result
+  failed_when: false
+  changed_when: db_result.rc == 0
+
+- name: Ensure database is running
+  shell: docker inspect -f '{% raw %}{{.State.Running}}{% endraw %}' database
+  register: db_check
+  failed_when: db_check.stdout != "true"

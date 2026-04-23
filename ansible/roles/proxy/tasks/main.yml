@@ -1,0 +1,17 @@
+---
+# Deploy Apache HTTP proxy container
+- name: Run Apache HTTP proxy
+  command: >
+    docker run -d
+    --name httpd
+    -p 80:80
+    --network my-network
+    {{ dockerhub_username }}/tp-devops-httpd:latest
+  register: proxy_result
+  failed_when: false
+  changed_when: proxy_result.rc == 0
+
+- name: Ensure proxy is running
+  shell: docker inspect -f '{% raw %}{{.State.Running}}{% endraw %}' httpd
+  register: proxy_check
+  failed_when: proxy_check.stdout != "true"
